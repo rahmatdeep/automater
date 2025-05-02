@@ -57,6 +57,9 @@ importers:
 
   apps/hooks:
     dependencies:
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       express:
         specifier: ^5.1.0
         version: 5.1.0
