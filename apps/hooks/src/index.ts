@@ -7,18 +7,25 @@ app.use(express.json());
 
 app.post("/hooks/catch/:userId/:zapId", async (req, res) => {
   const { userId, zapId } = req.params;
-  const {body} = req
+  const { body } = req;
   await prismaClient.$transaction(async (tx) => {
-    const run = await prismaClient.zapRun.create({
+    const run = await tx.zapRun.create({
       data: {
         zapId: zapId,
+        metaData: body,
       },
     });
 
-    await prismaClient.zapRunOutbox.create({
+    await tx.zapRunOutbox.create({
       data: {
-        zapRunId: zapId,
+        zapRunId: run.id,
       },
     });
   });
+
+  res.json({
+    message: "Webhook recieved",
+  });
 });
+
+app.listen(3100);
