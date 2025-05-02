@@ -5,10 +5,20 @@ const app = express();
 
 app.use(express.json());
 
-app.post("/hooks/catch/:userId/:zapId", (req, res) => {
+app.post("/hooks/catch/:userId/:zapId", async (req, res) => {
   const { userId, zapId } = req.params;
+  const {body} = req
+  await prismaClient.$transaction(async (tx) => {
+    const run = await prismaClient.zapRun.create({
+      data: {
+        zapId: zapId,
+      },
+    });
 
-  //store in trigger in db
-
-  // push it to a queue
+    await prismaClient.zapRunOutbox.create({
+      data: {
+        zapRunId: zapId,
+      },
+    });
+  });
 });
