@@ -12,13 +12,19 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@repo/common": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.1"
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9"
   },
   "dependencies": {
+    "@repo/db": "workspace:*",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "@repo/db": "workspace:*"
+    "jsonwebtoken": "^9.0.2"
   }
 }
