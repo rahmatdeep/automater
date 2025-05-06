@@ -21,7 +21,7 @@ export default function Signup() {
             <CheckFeature label="14-day trial of premium features & apps" />
           </div>
         </div>
-        <div className="flex-1 pt-6 pb-6 mt-12 px-4 border rounded ">
+        <div className="flex-1 pt-6 pb-6 mt-12 px-4 border rounded border-slate-100">
           <Input label={"Name"} onChange={(e) => {}} placeholder="Your Name" />
           <Input
             label={"Email"}
