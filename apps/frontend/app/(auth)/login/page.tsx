@@ -2,8 +2,15 @@
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { CheckFeature } from "@/components/CheckFeature";
 import { Input } from "@/components/Input";
+import { useRef } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+  const emailRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const router = useRouter();
   return (
     <div className="flex justify-center">
       <div className="flex pt-8 max-w-8xl">
@@ -26,14 +33,30 @@ export default function Login() {
             label={"Email"}
             onChange={(e) => {}}
             placeholder="Your Email"
+            ref={emailRef}
           />
           <Input
             label={"password"}
             onChange={(e) => {}}
             placeholder="Password"
+            type="password"
+            ref={passwordRef}
           />
           <div className="pt-4">
-            <PrimaryButton onClick={() => {}} size="big">
+            <PrimaryButton
+              onClick={async () => {
+                const res = await axios.post(
+                  `${BACKEND_URL}/api/v1/user/signin`,
+                  {
+                    username: emailRef.current?.value,
+                    password: passwordRef.current?.value,
+                  }
+                );
+                localStorage.setItem("token", res.data.token);
+                router.push("/dashboard");
+              }}
+              size="big"
+            >
               Get started free
             </PrimaryButton>
           </div>

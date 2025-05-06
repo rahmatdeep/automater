@@ -2,8 +2,16 @@
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { CheckFeature } from "@/components/CheckFeature";
 import { Input } from "@/components/Input";
+import { useRef } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
+  const nameRef = useRef<null | HTMLInputElement>(null);
+  const emailRef = useRef<null | HTMLInputElement>(null);
+  const passwordRef = useRef<null | HTMLInputElement>(null);
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const router = useRouter();
   return (
     <div className="flex justify-center">
       <div className="flex pt-8 max-w-8xl">
@@ -22,19 +30,37 @@ export default function Signup() {
           </div>
         </div>
         <div className="flex-1 pt-6 pb-6 mt-12 px-4 border rounded border-slate-100">
-          <Input label={"Name"} onChange={(e) => {}} placeholder="Your Name" />
+          <Input
+            label={"Name"}
+            onChange={(e) => {}}
+            placeholder="Your Name"
+            ref={nameRef}
+          />
           <Input
             label={"Email"}
             onChange={(e) => {}}
             placeholder="Your Email"
+            ref={emailRef}
           />
           <Input
             label={"password"}
             onChange={(e) => {}}
             placeholder="Password"
+            type="password"
+            ref={passwordRef}
           />
           <div className="pt-4">
-            <PrimaryButton onClick={() => {}} size="big">
+            <PrimaryButton
+              onClick={async () => {
+                await axios.post(`${BACKEND_URL}/api/v1/user/signup`, {
+                  username: emailRef.current?.value,
+                  password: passwordRef.current?.value,
+                  name: nameRef.current?.value,
+                });
+                router.push("/login");
+              }}
+              size="big"
+            >
               Get started free
             </PrimaryButton>
           </div>

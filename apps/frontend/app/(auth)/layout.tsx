@@ -17,13 +17,13 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Appbar />
         {children}
       </body>
-    </html>
+    
   );
 }
