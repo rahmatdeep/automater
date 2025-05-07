@@ -43,6 +43,7 @@ model AvailableTriggers {
   id      String    @id @default(uuid())
   name    String
   Trigger Trigger[]
+  image   String
 }
 
 model Action {
@@ -58,6 +59,7 @@ model AvailableActions {
   id      String   @id @default(uuid())
   name    String
   actions Action[]
+  image   String
 }
 
 model ZapRun {
