@@ -21,3 +21,28 @@ export const ZapCreateSchema = z.object({
     })
   ),
 });
+
+export interface Zap {
+  id: string;
+  triggerId: string;
+  userId: number;
+  action: {
+    id: string;
+    zapId: string;
+    actionId: string;
+    sortingOrder: number;
+    type: {
+      id: string;
+      name: string;
+    };
+  }[];
+  trigger: {
+    id: string;
+    availableTriggersId: string;
+    zapId: string;
+    type: {
+      id: string;
+      name: string;
+    };
+  };
+}
