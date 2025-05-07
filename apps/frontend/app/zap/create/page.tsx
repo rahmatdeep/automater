@@ -24,6 +24,7 @@ export default function CreateZap() {
         </div>
         <div className="justify-center w-ful py-2">
           {selectedActions.map((action, index) => (
+            // eslint-disable-next-line react/jsx-key
             <div className="py-2 flex justify-center">
               <ZapCell
                 name={
