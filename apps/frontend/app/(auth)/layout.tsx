@@ -17,9 +17,9 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <>
       <Appbar />
       {children}
-    </body>
+    </>
   );
 }
