@@ -3,6 +3,7 @@ import { Appbar } from "@/components/Appbar";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { ZapCell } from "@/components/ZapCell";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 function useAvailableActionsAndTriggers() {
@@ -25,6 +26,7 @@ function useAvailableActionsAndTriggers() {
 }
 
 export default function CreateZap() {
+  const router = useRouter();
   const { availableActions, availableTriggers } =
     useAvailableActionsAndTriggers();
   useAvailableActionsAndTriggers();
@@ -45,6 +47,34 @@ export default function CreateZap() {
   return (
     <div>
       <Appbar />
+      <div className="flex justify-end bg-slate-200 p-4">
+        <PrimaryButton
+          onClick={async () => {
+            if (!selectedTrigger?.id) {
+              return;
+            }
+            const response = await axios.post(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/zap`,
+              {
+                availableTriggerId: selectedTrigger?.id,
+                triggerMetadata: {},
+                actions: selectedActions.map((action) => ({
+                  availableActionId: action.availableActionId,
+                  actionMetadata: {},
+                })),
+              },
+              {
+                headers: {
+                  Authorization: localStorage.getItem("token"),
+                },
+              }
+            );
+            router.push("/dashboard");
+          }}
+        >
+          Publish
+        </PrimaryButton>
+      </div>
       <div className="w-full min-h-screen bg-slate-200 flex flex-col justify-center">
         <div className="flex justify-center w-full">
           <ZapCell
