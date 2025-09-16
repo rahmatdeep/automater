@@ -34,6 +34,7 @@ export interface Zap {
     type: {
       id: string;
       name: string;
+      image: string;
     };
   }[];
   trigger: {
@@ -43,6 +44,7 @@ export interface Zap {
     type: {
       id: string;
       name: string;
+      image: string;
     };
   };
 }

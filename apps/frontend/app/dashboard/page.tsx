@@ -75,10 +75,12 @@ function ZapTable({ zaps }: { zaps: Zap[] }) {
         <div className="flex-1">Go</div>
       </div>
       {zaps.map((z) => (
-        // eslint-disable-next-line react/jsx-key
         <div key={z.id} className="flex border-b border-t py-4">
-          <div className="flex-1">
-            {z.trigger.type.name} {z.action.map((x) => x.type.name)}
+          <div className="flex-1 flex">
+            <img src={z.trigger.type.image} className="h-[30px] h-[30px]" />{" "}
+            {z.action.map((x) => (
+              <img src={x.type.image} className="h-[30px] h-[30px]" />
+            ))}
           </div>
           <div className="flex-1">{z.id}</div>
           <div className="flex-1">Nov 12, 2025</div>
