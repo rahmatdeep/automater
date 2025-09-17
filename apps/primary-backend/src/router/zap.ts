@@ -28,6 +28,7 @@ router.post("/", authMiddleware, async (req, res) => {
           create: parsedData.data.actions.map((x, index) => ({
             availableActionsId: x.availableActionId,
             sortingOrder: index,
+            metadata: x.actionMetadata,
           })),
         },
       },
@@ -57,11 +58,11 @@ router.get("/", authMiddleware, async (req, res) => {
           type: true,
         },
       },
-      trigger:{
-        include:{
-          type: true
-        }
-      }
+      trigger: {
+        include: {
+          type: true,
+        },
+      },
     },
   });
 
@@ -72,14 +73,14 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 router.get("/:zapId", authMiddleware, async (req, res) => {
-  const zapId = req.params.zapId
+  const zapId = req.params.zapId;
 
-  try{
+  try {
     const zap = await prismaClient.zap.findFirst({
       where: {
         id: zapId,
         //@ts-ignore
-        userId: req.id
+        userId: req.id,
       },
       include: {
         action: {
@@ -87,23 +88,23 @@ router.get("/:zapId", authMiddleware, async (req, res) => {
             type: true,
           },
         },
-        trigger:{
-          include:{
-            type: true
-          }
-        }
-      }
-    }) 
+        trigger: {
+          include: {
+            type: true,
+          },
+        },
+      },
+    });
     res.json({
-      zap
-    })
-    return
-  }catch(e){
-    console.log(e)
+      zap,
+    });
+    return;
+  } catch (e) {
+    console.log(e);
     res.status(500).json({
-      message: "Internal Servor Error"
-    })
-    return
+      message: "Internal Servor Error",
+    });
+    return;
   }
 });
 

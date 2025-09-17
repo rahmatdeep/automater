@@ -5,7 +5,7 @@ import React, { RefObject } from "react";
 interface InputProps {
   label: string;
   placeholder: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: "text" | "password";
 }
 

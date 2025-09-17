@@ -1,10 +1,11 @@
 "use client";
 import { Appbar } from "@/components/Appbar";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { Input } from "@/components/Input";
 import { ZapCell } from "@/components/ZapCell";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function useAvailableActionsAndTriggers() {
   const [availableActions, setAvailableActions] = useState([]);
@@ -39,6 +40,7 @@ export default function CreateZap() {
       index: number;
       availableActionId: string;
       availableActionName: string;
+      metadata: unknown;
     }[]
   >([]);
   const [selectedModalIndex, setSelectedModalIndex] = useState<null | number>(
@@ -60,7 +62,7 @@ export default function CreateZap() {
                 triggerMetadata: {},
                 actions: selectedActions.map((action) => ({
                   availableActionId: action.availableActionId,
-                  actionMetadata: {},
+                  actionMetadata: action.metadata,
                 })),
               },
               {
@@ -112,6 +114,7 @@ export default function CreateZap() {
                     index: a.length + 2,
                     availableActionId: "",
                     availableActionName: "",
+                    metadata: {},
                   },
                 ]);
               }}
@@ -126,7 +129,9 @@ export default function CreateZap() {
           availableItems={
             selectedModalIndex === 1 ? availableTriggers : availableActions
           }
-          onSelect={(props: null | { name: string; id: string }) => {
+          onSelect={(
+            props: null | { name: string; id: string; metadata: unknown }
+          ) => {
             if (props === null) {
               setSelectedModalIndex(null);
               return;
@@ -140,6 +145,7 @@ export default function CreateZap() {
                   index: selectedModalIndex,
                   availableActionId: props.id,
                   availableActionName: props.name,
+                  metadata: props.metadata,
                 };
                 return newActions;
               });
@@ -159,9 +165,18 @@ function Modal({
   availableItems,
 }: {
   index: number;
-  onSelect: (props: null | { name: string; id: string }) => void;
+  onSelect: (
+    props: null | { name: string; id: string; metadata: unknown }
+  ) => void;
   availableItems: { id: string; name: string; image: string }[];
 }) {
+  const [step, setStep] = useState(0);
+  const [selectedAction, setSelectedAction] = useState<{
+    name: string;
+    id: string;
+  }>();
+  const isTrigger = index === 1;
+
   return (
     <div className="fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex bg-slate-100 bg-opacity-70">
       <div className="relative p-4 w-full max-w-2xl max-h-full">
@@ -196,26 +211,122 @@ function Modal({
             </button>
           </div>
           <div className="p-4 md:p-5 space-y-4">
-            {availableItems.map(({ id, name, image }) => {
-              return (
-                <div
-                  key={id}
-                  onClick={() => {
-                    onSelect({
-                      id,
-                      name,
-                    });
-                  }}
-                  className="flex border p-4 cursor-pointer hover:bg-slate-100"
-                >
-                  <img src={image} width={30} className="rounded-full" />{" "}
-                  <div className="flex flex-col justify-center">{name}</div>
-                </div>
-              );
-            })}
+            {step === 1 && selectedAction?.id === "email" && (
+              <EmailSelector
+                setMetadata={(metadata) => {
+                  onSelect({
+                    ...selectedAction,
+                    metadata,
+                  });
+                }}
+              />
+            )}
+            {step === 1 && selectedAction?.id === "send-sol" && (
+              <SolanaSelector
+                setMetadata={(metadata) => {
+                  onSelect({
+                    ...selectedAction,
+                    metadata,
+                  });
+                }}
+              />
+            )}
+            {step === 0 && (
+              <div>
+                {availableItems.map(({ id, name, image }) => {
+                  return (
+                    <div
+                      key={id}
+                      onClick={() => {
+                        if (isTrigger) {
+                          onSelect({
+                            id,
+                            name,
+                            metadata: {},
+                          });
+                        } else {
+                          setStep((s) => s + 1);
+                          setSelectedAction({
+                            id,
+                            name,
+                          });
+                        }
+                      }}
+                      className="flex border p-4 cursor-pointer hover:bg-slate-100"
+                    >
+                      <img src={image} width={30} className="rounded-full" />{" "}
+                      <div className="flex flex-col justify-center">{name}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function EmailSelector({
+  setMetadata,
+}: {
+  setMetadata: (params: unknown) => void;
+}) {
+  const emailAddrRef = useRef<HTMLInputElement>(null);
+  const bodyRef = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      <Input ref={emailAddrRef} type={"text"} placeholder="to" label={"To"} />{" "}
+      <Input ref={bodyRef} type={"text"} placeholder="body" label={"Body"} />{" "}
+      <PrimaryButton
+        onClick={() => {
+          if (emailAddrRef.current && bodyRef.current)
+            setMetadata({
+              email: emailAddrRef.current.value,
+              body: bodyRef.current.value,
+            });
+        }}
+      >
+        Submit
+      </PrimaryButton>
+    </>
+  );
+}
+
+function SolanaSelector({
+  setMetadata,
+}: {
+  setMetadata: (params: unknown) => void;
+}) {
+  const addressRef = useRef<HTMLInputElement>(null);
+  const amountRef = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      {" "}
+      <Input
+        ref={addressRef}
+        type={"text"}
+        placeholder="Sol Address"
+        label={"Sol Address"}
+      />{" "}
+      <Input
+        ref={amountRef}
+        type={"text"}
+        placeholder="Amount"
+        label={"Amount"}
+      />{" "}
+      <PrimaryButton
+        onClick={() => {
+          if (amountRef.current && addressRef.current)
+            setMetadata({
+              amount: amountRef.current.value,
+              address: addressRef.current.value,
+            });
+        }}
+      >
+        Submit
+      </PrimaryButton>
+    </>
   );
 }
