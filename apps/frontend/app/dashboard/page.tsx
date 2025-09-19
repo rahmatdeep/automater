@@ -72,6 +72,7 @@ function ZapTable({ zaps }: { zaps: Zap[] }) {
         <div className="flex-1">Name</div>
         <div className="flex-1">ID</div>
         <div className="flex-1">Created At</div>
+        <div className="flex-1">Webhook URL</div>
         <div className="flex-1">Go</div>
       </div>
       {zaps.map((z) => (
