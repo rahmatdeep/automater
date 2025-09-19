@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "prisma": {
+    "seed": "ts-node src/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -14,7 +17,10 @@
     "prisma": "^6.7.0"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "ts-node": "^10.9.2"
   },
-  "exports":{ "./client": "./src/index.ts"}
+  "exports": {
+    "./client": "./src/index.ts"
+  }
 }
