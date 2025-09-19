@@ -1,7 +1,6 @@
 import { kafka, TOPIC_NAME } from "@repo/kafka/kafka-client";
 
 (async () => {
-  while (true) {
     const consumer = kafka.consumer({ groupId: "main-worker" });
     await consumer.connect();
 
@@ -25,5 +24,5 @@ import { kafka, TOPIC_NAME } from "@repo/kafka/kafka-client";
         ]);
       },
     });
-  }
+  
 })();
